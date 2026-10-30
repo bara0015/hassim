@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Duel Hassim - Platform Game PVP #1 di WhatsApp</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0b0d12;
+      --card: #151922;
+      --card-hover: #1c212e;
+      --border: #252b3a;
+      --text: #e8eaef;
+      --text-muted: #9aa3b5;
+      --purple: #7c5cff;
+      --purple-dark: #5b3fd4;
+      --purple-glow: rgba(124, 92, 255, 0.25);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 5%;
+      background: rgba(11, 13, 18, 0.9);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 700;
+      font-size: 1.25rem;
+    }
+
+    .logo-icon {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, #7c5cff, #a78bfa);
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+      color: white;
+      padding: 0.65rem 1.4rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 18px var(--purple-glow);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 22px var(--purple-glow);
+    }
+
+    .hero {
+      text-align: center;
+      padding: 5.5rem 5% 4.5rem;
+      position: relative;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -80px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 700px;
+      height: 450px;
+      background: radial-gradient(ellipse, var(--purple-glow), transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(124, 92, 255, 0.12);
+      border: 1px solid rgba(124, 92, 255, 0.3);
+      color: #c4b5fd;
+      padding: 0.4rem 1.1rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 1.6rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.8rem, 7vw, 4.2rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 0.3rem;
+      letter-spacing: -0.02em;
+    }
+
+    .hero h1 .purple {
+      background: linear-gradient(135deg, #a78bfa, #7c5cff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      margin-bottom: 0.6rem;
+    }
+
+    .hero p {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      max-width: 480px;
+      margin: 0 auto 2.2rem;
+    }
+
+    .stats-row {
+      display: flex;
+      justify-content: center;
+      gap: 3.5rem;
+      flex-wrap: wrap;
+      margin-top: 3rem;
+    }
+
+    .stat-item { text-align: center; }
+    .stat-value { font-size: 1.85rem; font-weight: 700; }
+    .stat-label { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.15rem; }
+
+    section { padding: 4.5rem 5%; }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 2.8rem;
+    }
+
+    .section-header h2 {
+      font-size: clamp(1.7rem, 4vw, 2.2rem);
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+    }
+
+    .section-header h2 span { color: var(--purple); }
+    .section-header p { color: var(--text-muted); max-width: 460px; margin: 0 auto; }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .feature-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.7rem;
+      transition: background 0.2s, border-color 0.2s, transform 0.2s;
+    }
+
+    .feature-card:hover {
+      background: var(--card-hover);
+      border-color: rgba(124, 92, 255, 0.4);
+      transform: translateY(-3px);
+    }
+
+    .feature-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      margin-bottom: 1.1rem;
+    }
+
+    .icon-yellow { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+    .icon-green  { background: rgba(34, 197, 94, 0.15); color: #4ade80; }
+    .icon-blue   { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+    .icon-purple { background: rgba(124, 92, 255, 0.15); color: #a78bfa; }
+    .icon-cyan   { background: rgba(6, 182, 212, 0.15); color: #22d3ee; }
+    .icon-orange { background: rgba(249, 115, 22, 0.15); color: #fb923c; }
+
+    .feature-card h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.45rem; }
+    .feature-card p { color: var(--text-muted); font-size: 0.92rem; }
+
+    .games-section {
+      background: linear-gradient(180deg, transparent, rgba(124, 92, 255, 0.035), transparent);
+    }
+
+    .games-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 0.7rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 0.55rem 1.25rem;
+      border-radius: 999px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active,
+    .tab-btn:hover {
+      background: rgba(124, 92, 255, 0.15);
+      border-color: var(--purple);
+      color: #c4b5fd;
+    }
+
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+      gap: 1rem;
+      max-width: 920px;
+      margin: 0 auto;
+    }
+
+    .game-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.3rem 0.9rem;
+      text-align: center;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .game-card:hover {
+      border-color: var(--purple);
+      background: var(--card-hover);
+      transform: translateY(-2px);
+    }
+
+    .game-code {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--purple);
+      margin-bottom: 0.25rem;
+    }
+
+    .game-name { font-size: 0.82rem; color: var(--text-muted); }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.4rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .step-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem 1.5rem;
+      text-align: center;
+    }
+
+    .step-number {
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      margin: 0 auto 1.2rem;
+      font-size: 1.15rem;
+    }
+
+    .step-card h3 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+    .step-card p { color: var(--text-muted); font-size: 0.92rem; }
+
+    .step-card .cmds {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      justify-content: center;
+      margin-top: 0.7rem;
+    }
+
+    .step-card code {
+      background: rgba(124, 92, 255, 0.12);
+      color: #c4b5fd;
+      padding: 0.25rem 0.55rem;
+      border-radius: 6px;
+      font-size: 0.78rem;
+    }
+
+    .announcements {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .ann-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.4rem 1.5rem;
+      transition: border-color 0.2s;
+    }
+
+    .ann-card:hover { border-color: rgba(124, 92, 255, 0.35); }
+
+    .ann-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 0.7rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .ann-tag {
+      background: rgba(124, 92, 255, 0.15);
+      color: #c4b5fd;
+      padding: 0.15rem 0.55rem;
+      border-radius: 6px;
+      font-weight: 500;
+    }
+
+    .ann-card h3 { font-size: 1.05rem; margin-bottom: 0.4rem; }
+    .ann-card p { color: var(--text-muted); font-size: 0.9rem; }
+
+    .articles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.3rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .article-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .article-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(124, 92, 255, 0.35);
+    }
+
+    .article-body { padding: 1.4rem 1.5rem; }
+    .article-meta { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+    .article-card h3 { font-size: 1.05rem; margin-bottom: 0.45rem; }
+    .article-card p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 0.8rem; }
+    .article-card .read-more { color: var(--purple); font-size: 0.9rem; font-weight: 500; }
+
+    .cta { text-align: center; padding: 5rem 5%; }
+
+    .cta-box {
+      background: linear-gradient(135deg, rgba(124, 92, 255, 0.14), rgba(91, 63, 212, 0.08));
+      border: 1px solid rgba(124, 92, 255, 0.3);
+      border-radius: 24px;
+      padding: 3.5rem 2rem;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .cta-box h2 { font-size: 1.8rem; margin-bottom: 0.7rem; }
+    .cta-box p { color: var(--text-muted); margin-bottom: 1.8rem; }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2.8rem 5%;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    footer .logo { justify-content: center; margin-bottom: 1rem; }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .stats-row { gap: 1.8rem; }
+      .hero { padding: 3.8rem 5% 3.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="#" class="logo">
+      <div class="logo-icon">⚔️</div>
+      Duel Hassim
+    </a>
+    <ul class="nav-links">
+      <li><a href="#games">Games</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#cara-main">Cara Main</a></li>
+      <li><a href="#kontak">Kontak</a></li>
+      <li><a href="#artikel">Artikel</a></li>
+    </ul>
+    <a href="#join" class="btn-primary">Join Grup →</a>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-badge">
+      <span>⚡</span> Platform Aktif 24/7
+    </div>
+    <h1>DUEL <span class="purple">HASSIM</span></h1>
+    <p class="hero-sub">Platform Game PVP #1 di WhatsApp</p>
+    <p>Rasakan sensasi duel seru dengan pemain lain secara real-time.</p>
+    <a href="#join" class="btn-primary" style="font-size: 1.05rem; padding: 0.9rem 1.9rem;">
+      Mulai Duel Sekarang →
+    </a>
+
+    <div class="stats-row">
+      <div class="stat-item">
+        <div class="stat-value">12+</div>
+        <div class="stat-label">Game Available</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">10K+</div>
+        <div class="stat-label">Active Players</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">24/7</div>
+        <div class="stat-label">Auto Host</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="features">
+    <div class="section-header">
+      <h2>Kenapa Memilih <span>Duel Hassim</span>?</h2>
+      <p>Fitur-fitur unggulan yang membuat pengalaman bermain semakin seru</p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon icon-yellow">⚡</div>
+        <h3>Real-Time Battle</h3>
+        <p>Duel langsung dengan pemain lain tanpa delay. Sistem anti-cheat terintegrasi.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon icon-green">🎮</div>
+        <h3>Multi-Game Support</h3>
+        <p>12+ game berbeda dalam satu platform. Dari kartu hingga dadu.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon icon-blue">🤖</div>
+        <h3>Auto-Host System</h3>
+        <p>Fitur autohost untuk game reme dan leme. Setelah konfigurasi, jalan otomatis.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon icon-purple">👥</div>
+        <h3>4 Player Mode</h3>
+        <p>Main bareng 3 teman sekaligus dalam mode multiplayer.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon icon-cyan">🛡️</div>
+        <h3>Secure & Fair</h3>
+        <p>Sistem transaksi aman dengan enkripsi end-to-end.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon icon-orange">🕐</div>
+        <h3>24/7 Available</h3>
+        <p>Platform aktif non-stop. Main kapan saja via WhatsApp.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="games-section" id="games">
+    <div class="section-header">
+      <h2>Pilih Mode <span>Duel</span> Kamu</h2>
+      <p>Berbagai pilihan game seru untuk duel melawan pemain lain atau host</p>
+    </div>
+
+    <div class="games-tabs">
+      <button class="tab-btn active">Game PVP</button>
+      <button class="tab-btn">Game PVH</button>
+      <button class="tab-btn">4 Player</button>
+    </div>
+
+    <div class="games-grid">
+      <div class="game-card"><div class="game-code">BJ</div><div class="game-name">Blackjack</div></div>
+      <div class="game-card"><div class="game-code">BTK</div><div class="game-name">Bakar Tebak Kartu</div></div>
+      <div class="game-card"><div class="game-code">REME</div><div class="game-name">b1 / b3 / b5 / b7</div></div>
+      <div class="game-card"><div class="game-code">QQ</div><div class="game-name">b1 / b3 / b5 / b7</div></div>
+      <div class="game-card"><div class="game-code">CSN</div><div class="game-name">b1 / b3 / b5 / b7</div></div>
+      <div class="game-card"><div class="game-code">LEME</div><div class="game-name">b1 / b3 / b5 / b7</div></div>
+      <div class="game-card"><div class="game-code">RPS</div><div class="game-name">Rock Paper Scissors</div></div>
+      <div class="game-card"><div class="game-code">DADU</div><div class="game-name">Dice Game</div></div>
+      <div class="game-card"><div class="game-code">KB</div><div class="game-name">Kecil Besar</div></div>
+      <div class="game-card"><div class="game-code">COIN</div><div class="game-name">Flip Coin</div></div>
+      <div class="game-card"><div class="game-code">LMH</div><div class="game-name">Low Mid High</div></div>
+      <div class="game-card"><div class="game-code">TTT</div><div class="game-name">Tic Tac Toe</div></div>
+    </div>
+  </section>
+
+  <section id="cara-main">
+    <div class="section-header">
+      <h2>Mulai Duel dalam <span>3 Langkah</span></h2>
+      <p>Cepat dan mudah mulai bermain di platform kami</p>
+    </div>
+
+    <div class="steps">
+      <div class="step-card">
+        <div class="step-number">1</div>
+        <h3>Join Grup WhatsApp</h3>
+        <p>Klik tombol di atas untuk bergabung ke grup resmi Duel Hassim</p>
+      </div>
+      <div class="step-card">
+        <div class="step-number">2</div>
+        <h3>Pilih Game</h3>
+        <p>Gunakan command sesuai game yang ingin dimainkan</p>
+        <div class="cmds">
+          <code>BJ 1000</code>
+          <code>dadu 500 b5</code>
+          <code>rps 2000 b3</code>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-number">3</div>
+        <h3>Menangkan Duel!</h3>
+        <p>Tunggu lawan bergabung dan mulai pertandingan. Menang = Dapat Saldo!</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-header">
+      <h2>Pengumuman & <span>Update</span></h2>
+      <p>Info terbaru seputar platform</p>
+    </div>
+
+    <div class="announcements">
+      <div class="ann-card">
+        <div class="ann-meta">
+          <span class="ann-tag">Maintenance</span>
+          <span>15 Jan 2024</span>
+        </div>
+        <h3>Jadwal Maintenance Server</h3>
+        <p>Maintenance rutin akan dilaksanakan pada tanggal 20 Januari pukul 02:00 - 04:00 WIB</p>
+      </div>
+      <div class="ann-card">
+        <div class="ann-meta">
+          <span class="ann-tag">Update</span>
+          <span>12 Jan 2024</span>
+        </div>
+        <h3>Game Baru: NEME</h3>
+        <p>Telah ditambahkan game NEME (New Memory). Coba sekarang!</p>
+      </div>
+      <div class="ann-card">
+        <div class="ann-meta">
+          <span class="ann-tag">Event</span>
+          <span>10 Jan 2024</span>
+        </div>
+        <h3>Event Weekend Bonus</h3>
+        <p>Dapatkan bonus 10% setiap weekend! Berlaku untuk semua jenis game PVP.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="artikel">
+    <div class="section-header">
+      <h2>Artikel & <span>Panduan</span></h2>
+      <p>Pelajari lebih dalam tentang cara bermain dan strategi menang</p>
+    </div>
+
+    <div class="articles-grid">
+      <div class="article-card">
+        <div class="article-body">
+          <div class="article-meta">Tutorial · 5 min read</div>
+          <h3>Panduan Lengkap Bermain BJ (Blackjack)</h3>
+          <p>Pelajari cara bermain blackjack, strategi dasar, dan tips untuk menang...</p>
+          <a href="#" class="read-more">Baca Selengkapnya →</a>
+        </div>
+      </div>
+      <div class="article-card">
+        <div class="article-body">
+          <div class="article-meta">Strategi · 7 min read</div>
+          <h3>Tips Menang Game DADU & KB</h3>
+          <p>Strategi jitu untuk game dadu dan kecil besar...</p>
+          <a href="#" class="read-more">Baca Selengkapnya →</a>
+        </div>
+      </div>
+      <div class="article-card">
+        <div class="article-body">
+          <div class="article-meta">FAQ · 3 min read</div>
+          <h3>FAQ: Pertanyaan Umum Seputar Duel Hassim</h3>
+          <p>Jawaban untuk pertanyaan yang sering ditanyakan...</p>
+          <a href="#" class="read-more">Baca Selengkapnya →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta" id="join">
+    <div class="cta-box">
+      <h2>Siap untuk Duel?</h2>
+      <p>Bergabung sekarang dan rasakan sensasi PVP real-time bersama ribuan player lainnya.</p>
+      <a href="https://chat.whatsapp.com/" class="btn-primary" style="font-size: 1.05rem; padding: 0.95rem 2.1rem;" target="_blank" rel="noopener">
+        Join Grup WhatsApp →
+      </a>
+    </div>
+  </section>
+
+  <footer id="kontak">
+    <div class="logo">
+      <div class="logo-icon">⚔️</div>
+      Duel Hassim
+    </div>
+    <p>© 2026 Duel Hassim. Platform Game PVP via WhatsApp.</p>
+    <p style="margin-top: 0.4rem; font-size: 0.82rem;">Butuh bantuan? Hubungi admin via WhatsApp.</p>
+  </footer>
+
+  <script>
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>
